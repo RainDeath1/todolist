@@ -17,11 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from todo_list.views import redirect_view, todo, category
+from todo_list.views import redirect_view, TodoListView, CategoryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', redirect_view),
-    path('todo/', todo, name='todo'),
-    path('category', category, name='category'),
+    path('category/', CategoryView.as_view(), name='category'),
+    path('todo/', TodoListView.as_view(), name='todo'),
 ]

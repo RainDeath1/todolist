@@ -2,24 +2,40 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Приложение для дел</title>
     {% load static %}
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'bulma.min.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Подключение Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Подключение Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
-<body>
+<body class="bg-primary.bg-gradient">
     <div django-app="TaskManager">
-        <nav class="navbar is-success" role="navigation" aria-label="main navigation">
-            <div class="navbar-menu ">
-                <div class="navbar-start">
-                    <a class="navbar-item" href="../category"> Категории</a>
-                    <a class="navbar-item" href="../todo"> Список дел </a>
+        <!-- Использование компонентов Bootstrap для навигационной панели -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-success">
+            <div class="container-fluid">
+                <a class="navbar-brand text-white" href="#">TaskManager</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="../category">Категории</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="../todo">Список дел</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
-        {% block content %}
-        {% endblock %}
+        <!-- Место для контента, который будет вставлен с помощью блоков -->
+        <main class="container mt-4">
+            {% block content %}
+            {% endblock %}
+        </main>
     </div>
+    <!-- Подключение Bootstrap Bundle, который включает Popper -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>

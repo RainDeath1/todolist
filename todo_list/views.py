@@ -1,6 +1,5 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-
+from django.views.generic import TemplateView, CreateView, DeleteView
 from .models import TodoList, Category
 
 
@@ -8,50 +7,45 @@ def redirect_view(request):
     return redirect("/category")
 
 
-def todo(request):
-    todos = TodoList.objects.all()
-    categories = Category.objects.all()
+class TodoListView(TemplateView):
+    template_name = "todo.html"
 
-    if request.method == "POST":
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['todos'] = TodoList.objects.all()
+        context['categories'] = Category.objects.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
         if "Add" in request.POST:
             title = request.POST["description"]
-            date = str(request.POST["date"])
+            date = request.POST["date"]
             category = request.POST["category_select"]
-            content = title + "-- " + date + " " + category
-            todo = TodoList(title=title, content=content, due_date=date,
-                            category=Category.objects.get(name=category))
-            todo.save()
-            return redirect("/todo")
-
-        if "Delete" in request.POST:
+            TodoList.objects.create(
+                title=title,
+                content=f"{title} -- {date} {category}",
+                due_date=date,
+                category=Category.objects.get(name=category)
+            )
+        elif "Delete" in request.POST:
             checked_list = request.POST.getlist('checkedbox')
-
-            for i in range(len(checked_list)):
-                todo = TodoList.objects.filter(id=int(checked_list[i]))
-                todo.delete()
-
-    return render(request, "todo.html",
-                  {"todos": todos, "categories": categories})
+            TodoList.objects.filter(id__in=checked_list).delete()
+        return redirect("todo")
 
 
-def category(request):
-    categories = Category.objects.all()
+class CategoryView(TemplateView):
+    template_name = "category.html"
 
-    if request.method == "POST":
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
         if "Add" in request.POST:
             name = request.POST["name"]
-            category = Category(name=name)
-            category.save()
-            return redirect("/category")
-
-        if "Delete" in request.POST:
+            Category.objects.create(name=name)
+        elif "Delete" in request.POST:
             check = request.POST.getlist('check')
-
-            for i in range(len(check)):
-                try:
-                    categ = Category.objects.filter(id=int(check[i]))
-                    categ.delete()
-                except BaseException:
-                    return HttpResponse('<h1>Сначала удалите карточки с данными категориями!</h1>')
-
-    return render(request, "category.html", {"categories": categories})
+            Category.objects.filter(id__in=check).delete()
+        return redirect("category")
