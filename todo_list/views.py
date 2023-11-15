@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, CreateView, DeleteView
+from django.shortcuts import redirect
+from django.views.generic import TemplateView
 from .models import TodoList, Category
 
 
